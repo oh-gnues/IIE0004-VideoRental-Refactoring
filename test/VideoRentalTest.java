@@ -4,7 +4,6 @@ import org.junit.jupiter.api.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,7 +40,7 @@ class VideoRentalTest {
             customer.addRental(rentalRegular);
 
             assertEquals(1, customer.getRentals().size());
-            assertEquals("Regular Movie", customer.getRentals().get(0).getVideo().getTitle());
+            assertEquals("Regular Movie", customer.getRentals().getFirst().getVideo().getTitle());
         }
 
         @Test
@@ -225,8 +224,6 @@ class VideoRentalTest {
     @Nested
     @DisplayName("VRUI 시스템 테스트")
     class VRUITest {
-        private VRUI vrui;
-        private InputStream testIn;
         private ByteArrayOutputStream testOut;
 
         @BeforeEach
@@ -238,37 +235,131 @@ class VideoRentalTest {
         @Test
         @DisplayName("고객 등록이 정상적으로 수행되어야 한다")
         void registerCustomerTest() {
-            // 3. Register customer -> John 입력 -> 1. List customers -> 0. Quit
-            String input = "3\nJohn\n1\n0\n";
-            testIn = new ByteArrayInputStream(input.getBytes());
+            String input = "3\nTestCustomer\n"; // Register customer
+            input += "1\n"; // List customers
+            input += "0\n"; // Quit
+            ByteArrayInputStream testIn = new ByteArrayInputStream(input.getBytes());
             System.setIn(testIn);
 
-            vrui = new VRUI();
-            vrui.main(new String[]{});
+            VRUI.main(new String[]{});
 
-            assertTrue(testOut.toString().contains("List of customers"));
-            assertTrue(testOut.toString().contains("John"));
+            String output = testOut.toString();
+            assertAll(
+                    () -> assertTrue(output.contains("List of customers")),
+                    () -> assertTrue(output.contains("TestCustomer"))
+            );
         }
 
         @Test
         @DisplayName("비디오 등록이 정상적으로 수행되어야 한다")
         void registerVideoTest() {
-            // 4. Register video -> Matrix 입력 -> 1 (Video type) -> 1 (Price code) -> 2. List videos -> 0. Quit
-            String input = "4\nMatrix\n1\n1\n2\n0\n";
-            testIn = new ByteArrayInputStream(input.getBytes());
+            String input = "4\nTestVideo\n1\n1\n"; // Register video
+            input += "2\n"; // List videos
+            input += "0\n"; // Quit
+            ByteArrayInputStream testIn = new ByteArrayInputStream(input.getBytes());
             System.setIn(testIn);
 
-            vrui = new VRUI();
-            vrui.main(new String[]{});
+            VRUI.main(new String[]{});
 
-            assertTrue(testOut.toString().contains("List of videos"));
-            assertTrue(testOut.toString().contains("Matrix"));
+            String output = testOut.toString();
+            assertAll(
+                    () -> assertTrue(output.contains("List of videos")),
+                    () -> assertTrue(output.contains("TestVideo"))
+            );
+        }
+
+        @Test
+        @DisplayName("비디오 대여가 정상적으로 처리되어야 한다")
+        void rentVideoTest() {
+            String input = "3\nTestCustomer\n"; // Register customer
+            input += "4\nTestVideo\n1\n1\n"; // Register video
+            input += "5\nTestCustomer\nTestVideo\n"; // Rent video
+            input += "1\n"; // List customers
+            input += "0\n"; // Quit
+            ByteArrayInputStream testIn = new ByteArrayInputStream(input.getBytes());
+            System.setIn(testIn);
+
+            VRUI.main(new String[]{});
+
+            String output = testOut.toString();
+            assertAll(
+                    () -> assertTrue(output.contains("List of customers")),
+                    () -> assertTrue(output.contains("TestCustomer")),
+                    () -> assertTrue(output.contains("TestVideo"))
+            );
+        }
+
+        @Test
+        @DisplayName("비디오 반납이 정상적으로 처리되어야 한다")
+        void returnVideoTest() {
+            String input = "3\nTestCustomer\n"; // Register customer
+            input += "4\nTestVideo\n1\n1\n"; // Register video
+            input += "5\nTestCustomer\nTestVideo\n1\n"; // Rent video
+            input += "6\nTestCustomer\nTestVideo\n"; // Return video
+            input += "1\n"; // List customers
+            input += "0\n"; // Quit
+
+            ByteArrayInputStream testIn = new ByteArrayInputStream(input.getBytes());
+            System.setIn(testIn);
+
+            VRUI.main(new String[]{});
+
+            String output = testOut.toString();
+
+            assertAll(
+                    () -> assertTrue(output.contains("List of customers")),
+                    () -> assertTrue(output.contains("TestCustomer")),
+                    () -> assertFalse(output.contains("TestVideo"))
+            );
+        }
+
+        @Test
+        @DisplayName("고객 리포트가 정상적으로 생성되어야 한다")
+        void customerReportTest() {
+            String input = "3\nTestCustomer\n"; // Register customer
+            input += "4\nTestVideo\n1\n1\n"; // Register video
+            input += "5\nTestCustomer\nTestVideo\n"; // Rent video
+            input += "7\nTestCustomer\n"; // Show customer report
+            input += "0\n"; // Quit
+
+            ByteArrayInputStream testIn = new ByteArrayInputStream(input.getBytes());
+            System.setIn(testIn);
+
+            VRUI.main(new String[]{});
+
+            String output = testOut.toString();
+            assertAll(
+                    () -> assertTrue(output.contains("Customer Report for TestCustomer")),
+                    () -> assertTrue(output.contains("TestVideo"))
+            );
+        }
+
+        @Test
+        @DisplayName("대여 목록 삭제가 정상적으로 처리되어야 한다")
+        void clearRentalsTest() {
+            String input = "3\nTestCustomer\n"; // Register customer
+            input += "4\nTestVideo\n1\n1\n"; // Register video
+            input += "5\nTestCustomer\nTestVideo\n"; // Rent video
+            input += "8\nTestCustomer\n"; // Show customer and clear rentals
+            input += "1\n"; // List customers
+            input += "0\n"; // Quit
+
+            ByteArrayInputStream testIn = new ByteArrayInputStream(input.getBytes());
+            System.setIn(testIn);
+
+            VRUI.main(new String[]{});
+
+            String output = testOut.toString();
+            assertAll(
+                    () -> assertTrue(output.contains("List of customers")),
+                    () -> assertTrue(output.contains("Name: TestCustomer\tRentals: 0"))
+            );
         }
 
         @AfterEach
         void restoreStreams() {
-            System.setOut(System.out);
             System.setIn(System.in);
+            System.setOut(System.out);
         }
     }
 
