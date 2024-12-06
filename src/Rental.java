@@ -1,3 +1,5 @@
+package src;
+
 import java.util.Date;
 
 public class Rental {
@@ -57,7 +59,7 @@ public class Rental {
 			daysRented = (int) (diff / (1000 * 60 * 60 * 24)) + 1;
 		}
 		if ( daysRented <= 2) return limit ;
-		
+
 		switch ( video.getVideoType() ) {
 			case Video.VHS: limit = 5 ; break ;
 			case Video.CD: limit = 3 ; break ;
