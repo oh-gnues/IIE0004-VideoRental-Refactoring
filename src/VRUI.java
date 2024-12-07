@@ -10,7 +10,7 @@ public class VRUI {
 
 	private List<Customer> customers = new ArrayList<Customer>() ;
 	
-	private List<Video> videos = new ArrayList<Video>() ;
+	private VideoService videoService = new VideoService() ;
 	
 	public static void main(String[] args) {
 		VRUI ui = new VRUI() ;
@@ -93,14 +93,12 @@ public class VRUI {
 		Customer brown = new Customer("Brown") ;
 		customers.add(james) ;
 		customers.add(brown) ;
+
+		videoService.registerVideo("v1", Video.CD, Video.REGULAR);
+		videoService.registerVideo("v2", Video.DVD, Video.NEW_RELEASE);
 		
-		Video v1 = new Video("v1", Video.CD, Video.REGULAR, new Date()) ;
-		Video v2 = new Video("v2", Video.DVD, Video.NEW_RELEASE, new Date()) ;
-		videos.add(v1) ;
-		videos.add(v2) ;
-		
-		Rental r1 = new Rental(v1) ;
-		Rental r2 = new Rental(v2) ;
+		Rental r1 = new Rental(videoService.findAvailableVideo("v1")) ;
+		Rental r2 = new Rental(videoService.findAvailableVideo("v2")) ;
 		
 		james.addRental(r1) ;
 		james.addRental(r2) ;
@@ -108,9 +106,9 @@ public class VRUI {
 
 	public void listVideos() {
 		System.out.println("List of videos");
-		
-		for ( Video video: videos ) {
-			System.out.println("Price code: " + video.getPriceCode() +"\tTitle: " + video.getTitle()) ;
+
+		for ( String videoInfo: videoService.listVideos() ) {
+			System.out.println(videoInfo) ;
 		}
 		System.out.println("End of list");
 	}
@@ -165,13 +163,7 @@ public class VRUI {
 		System.out.println("Enter video title to rent: ") ;
 		String videoTitle = scanner.next() ;
 
-		Video foundVideo = null ;
-		for ( Video video: videos ) {
-			if ( video.getTitle().equals(videoTitle) && video.isRented() == false ) {
-				foundVideo = video ;
-				break ;
-			}
-		}
+		Video foundVideo = videoService.findAvailableVideo(videoTitle) ;
 
 		if ( foundVideo == null ) return ;
 		
@@ -200,9 +192,7 @@ public class VRUI {
 		System.out.println("Enter price code( 1 for Regular, 2 for New Release ):") ;
 		int priceCode = scanner.nextInt();
 
-		Date registeredDate = new Date();
-		Video video = new Video(title, videoType, priceCode, registeredDate) ;
-		videos.add(video) ;
+		videoService.registerVideo(title, videoType, priceCode) ;
 	}
 
 	public int showCommand() {
