@@ -10,6 +10,7 @@ public class VRUI {
 
 	private CustomerService customerService = new CustomerService() ;
 	private VideoService videoService = new VideoService() ;
+	private RentalService rentalService = new RentalService(customerService, videoService) ;
 	
 	public static void main(String[] args) {
 		VRUI ui = new VRUI() ;
@@ -37,53 +38,24 @@ public class VRUI {
 	public void clearRentals() {
 		System.out.println("Enter customer name: ") ;
 		String customerName = scanner.next() ;
-		
-		Customer foundCustomer = customerService.findCustomer(customerName) ;
 
-		if ( foundCustomer == null ) {
-			System.out.println("No customer found") ;
-		} else {
-			System.out.println("Name: " + foundCustomer.getName() +
-					"\tRentals: " + foundCustomer.getRentals().size()) ;
-			for ( Rental rental: foundCustomer.getRentals() ) {
-				System.out.print("\tTitle: " + rental.getVideo().getTitle() + " ") ;
-				System.out.print("\tPrice Code: " + rental.getVideo().getPriceCode()) ;
-			}
-
-			List<Rental> rentals = new ArrayList<Rental>() ;
-			foundCustomer.setRentals(rentals);
-		}
+		rentalService.clearRentals(customerName) ;
 	}
 
 	public void returnVideo() {
 		System.out.println("Enter customer name: ") ;
 		String customerName = scanner.next() ;
 		
-		Customer foundCustomer = customerService.findCustomer(customerName) ;
-		if ( foundCustomer == null ) return ;
-		
 		System.out.println("Enter video title to return: ") ;
 		String videoTitle = scanner.next() ;
-			
-		List<Rental> customerRentals = foundCustomer.getRentals() ;
-		for ( Rental rental: customerRentals ) {
-			if ( rental.getVideo().getTitle().equals(videoTitle) && rental.getVideo().isRented() ) {
-				rental.returnVideo();
-				rental.getVideo().setRented(false);
-				break ;
-			}
-		}		
+
+		rentalService.returnVideo(customerName, videoTitle) ;
 	}
 
 	private void init() {
 		customerService.initDefaultCustomers();
 		videoService.initDefaultVideos();
-		
-		Rental r1 = new Rental(videoService.findAvailableVideo("v1")) ;
-		Rental r2 = new Rental(videoService.findAvailableVideo("v2")) ;
-		
-		customerService.findCustomer("James").addRental(r1) ;
-		customerService.findCustomer("James").addRental(r2) ;
+		rentalService.initDefaultRentals();
 	}
 
 	public void listVideos() {
@@ -106,38 +78,18 @@ public class VRUI {
 	public void getCustomerReport() {
 		System.out.println("Enter customer name: ") ;
 		String customerName = scanner.next() ;
-		
-		Customer foundCustomer = customerService.findCustomer(customerName) ;
 
-		if ( foundCustomer == null ) {
-			System.out.println("No customer found") ;
-		} else {
-			String result = foundCustomer.getReport() ;
-			System.out.println(result);
-		}
+		System.out.println(rentalService.getCustomerReport(customerName));
 	}
 
 	public void rentVideo() {
 		System.out.println("Enter customer name: ") ;
 		String customerName = scanner.next() ;
 		
-		Customer foundCustomer = customerService.findCustomer(customerName) ;
-
-		if ( foundCustomer == null ) return ;
-		
 		System.out.println("Enter video title to rent: ") ;
 		String videoTitle = scanner.next() ;
 
-		Video foundVideo = videoService.findAvailableVideo(videoTitle) ;
-
-		if ( foundVideo == null ) return ;
-		
-		Rental rental = new Rental(foundVideo) ;
-		foundVideo.setRented(true);
-		
-		List<Rental> customerRentals = foundCustomer.getRentals() ;
-		customerRentals.add(rental);
-		foundCustomer.setRentals(customerRentals);		
+		rentalService.rentVideo(customerName, videoTitle);
 	}
 
 	public void registerCustomer() {
