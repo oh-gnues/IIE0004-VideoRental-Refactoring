@@ -31,7 +31,10 @@ public class Customer {
 
 	public void addRental(Rental rental) {
 		rentals.add(rental);
+	}
 
+	public void removeRental(Rental rental) {
+		rentals.remove(rental);
 	}
 
 	public String getReport() {
@@ -45,15 +48,7 @@ public class Customer {
 		for (Rental each : rentals) {
 			double eachCharge = 0;
 			int eachPoint = 0 ;
-			int daysRented = 0;
-
-			if (each.getStatus() == 1) { // returned Video
-				long diff = each.getReturnDate().getTime() - each.getRentDate().getTime();
-				daysRented = (int) (diff / (1000 * 60 * 60 * 24)) + 1;
-			} else { // not yet returned
-				long diff = new Date().getTime() - each.getRentDate().getTime();
-				daysRented = (int) (diff / (1000 * 60 * 60 * 24)) + 1;
-			}
+			int daysRented = each.getDaysRented();
 
 			switch (each.getVideo().getPriceCode()) {
 			case Video.REGULAR:
