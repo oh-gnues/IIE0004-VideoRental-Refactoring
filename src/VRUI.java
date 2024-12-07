@@ -8,8 +8,7 @@ import java.util.Scanner;
 public class VRUI {
 	private static Scanner scanner = new Scanner(System.in) ;
 
-	private List<Customer> customers = new ArrayList<Customer>() ;
-	
+	private CustomerService customerService = new CustomerService() ;
 	private VideoService videoService = new VideoService() ;
 	
 	public static void main(String[] args) {
@@ -39,13 +38,7 @@ public class VRUI {
 		System.out.println("Enter customer name: ") ;
 		String customerName = scanner.next() ;
 		
-		Customer foundCustomer = null ;
-		for ( Customer customer: customers ) {
-			if ( customer.getName().equals(customerName)) {
-				foundCustomer = customer ;
-				break ;
-			}
-		}
+		Customer foundCustomer = customerService.findCustomer(customerName) ;
 
 		if ( foundCustomer == null ) {
 			System.out.println("No customer found") ;
@@ -66,13 +59,7 @@ public class VRUI {
 		System.out.println("Enter customer name: ") ;
 		String customerName = scanner.next() ;
 		
-		Customer foundCustomer = null ;
-		for ( Customer customer: customers ) {
-			if ( customer.getName().equals(customerName)) {
-				foundCustomer = customer ;
-				break ;
-			}
-		}
+		Customer foundCustomer = customerService.findCustomer(customerName) ;
 		if ( foundCustomer == null ) return ;
 		
 		System.out.println("Enter video title to return: ") ;
@@ -89,19 +76,14 @@ public class VRUI {
 	}
 
 	private void init() {
-		Customer james = new Customer("James") ;
-		Customer brown = new Customer("Brown") ;
-		customers.add(james) ;
-		customers.add(brown) ;
-
-		videoService.registerVideo("v1", Video.CD, Video.REGULAR);
-		videoService.registerVideo("v2", Video.DVD, Video.NEW_RELEASE);
+		customerService.initDefaultCustomers();
+		videoService.initDefaultVideos();
 		
 		Rental r1 = new Rental(videoService.findAvailableVideo("v1")) ;
 		Rental r2 = new Rental(videoService.findAvailableVideo("v2")) ;
 		
-		james.addRental(r1) ;
-		james.addRental(r2) ;
+		customerService.findCustomer("James").addRental(r1) ;
+		customerService.findCustomer("James").addRental(r2) ;
 	}
 
 	public void listVideos() {
@@ -115,13 +97,8 @@ public class VRUI {
 
 	public void listCustomers() {
 		System.out.println("List of customers");
-		for ( Customer customer: customers ) {
-			System.out.println("Name: " + customer.getName() +
-					"\tRentals: " + customer.getRentals().size()) ;
-			for ( Rental rental: customer.getRentals() ) {
-				System.out.print("\tTitle: " + rental.getVideo().getTitle() + " ") ;
-				System.out.print("\tPrice Code: " + rental.getVideo().getPriceCode()) ;
-			}
+		for ( String customerDetail: customerService.listCustomers() ) {
+			System.out.println(customerDetail);
 		}
 		System.out.println("End of list");
 	}
@@ -130,13 +107,7 @@ public class VRUI {
 		System.out.println("Enter customer name: ") ;
 		String customerName = scanner.next() ;
 		
-		Customer foundCustomer = null ;
-		for ( Customer customer: customers ) {
-			if ( customer.getName().equals(customerName)) {
-				foundCustomer = customer ;
-				break ;
-			}
-		}
+		Customer foundCustomer = customerService.findCustomer(customerName) ;
 
 		if ( foundCustomer == null ) {
 			System.out.println("No customer found") ;
@@ -150,13 +121,7 @@ public class VRUI {
 		System.out.println("Enter customer name: ") ;
 		String customerName = scanner.next() ;
 		
-		Customer foundCustomer = null ;
-		for ( Customer customer: customers ) {
-			if ( customer.getName().equals(customerName)) {
-				foundCustomer = customer ;
-				break ;
-			}
-		}
+		Customer foundCustomer = customerService.findCustomer(customerName) ;
 
 		if ( foundCustomer == null ) return ;
 		
@@ -178,8 +143,7 @@ public class VRUI {
 	public void registerCustomer() {
 		System.out.println("Enter customer name: ") ;
 		String name = scanner.next();
-		Customer customer = new Customer(name) ;
-		customers.add(customer) ;
+		customerService.registerCustomer(name) ;
 	}
 
 	public void registerVideo() {
