@@ -31,7 +31,10 @@ public class Customer {
 
 	public void addRental(Rental rental) {
 		rentals.add(rental);
+	}
 
+	public void removeRental(Rental rental) {
+		rentals.remove(rental);
 	}
 
 	public String getReport() {
