@@ -11,11 +11,17 @@ public class CustomerService {
     }
 
     public List<String> listCustomers() {
-        List<String> customerInfo = new ArrayList<>();
+        List<String> customerDetails = new ArrayList<>();
         for (Customer customer : customers) {
-            customerInfo.add("Name: " + customer.getName() + ", Rentals: " + customer.getRentals().size());
+            StringBuilder customerInfo = new StringBuilder();
+            customerInfo.append("Name: ").append(customer.getName()).append(", Rentals: ").append(customer.getRentals().size());
+            for (Rental rental : customer.getRentals()) {
+                customerInfo.append("\n\tTitle: " + rental.getVideo().getTitle())
+                        .append(" \tPrice Code: ").append(rental.getVideo().getPriceCode());
+            }
+            customerDetails.add(customerInfo.toString());
         }
-        return customerInfo;
+        return customerDetails;
     }
 
     public void registerCustomer(String name) {
