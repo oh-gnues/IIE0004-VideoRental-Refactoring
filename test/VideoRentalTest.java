@@ -294,7 +294,7 @@ class VideoRentalTest {
         void returnVideoTest() {
             String input = "3\nTestCustomer\n"; // Register customer
             input += "4\nTestVideo\n1\n1\n"; // Register video
-            input += "5\nTestCustomer\nTestVideo\n1\n"; // Rent video
+            input += "5\nTestCustomer\nTestVideo\n"; // Rent video
             input += "6\nTestCustomer\nTestVideo\n"; // Return video
             input += "1\n"; // List customers
             input += "0\n"; // Quit

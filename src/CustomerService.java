@@ -14,7 +14,7 @@ public class CustomerService {
         List<String> customerDetails = new ArrayList<>();
         for (Customer customer : customers) {
             StringBuilder customerInfo = new StringBuilder();
-            customerInfo.append("Name: ").append(customer.getName()).append(", Rentals: ").append(customer.getRentals().size());
+            customerInfo.append("Name: ").append(customer.getName()).append("\tRentals: ").append(customer.getRentals().size());
             for (Rental rental : customer.getRentals()) {
                 customerInfo.append("\n\tTitle: " + rental.getVideo().getTitle())
                         .append(" \tPrice Code: ").append(rental.getVideo().getPriceCode());
