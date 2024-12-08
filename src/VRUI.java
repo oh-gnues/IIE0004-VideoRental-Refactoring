@@ -126,7 +126,7 @@ public class VRUI {
 		System.out.println("Enter customer name: ") ;
 		String customerName = scanner.next() ;
 
-		CustomerReportData reportData = rentalService.getCustomerReportData(customerName);
+		CustomerReportData reportData = customerService.getCustomerReportData(customerName);
 		if (reportData == null) {
 			System.out.println("No customer found.");
 		} else {
