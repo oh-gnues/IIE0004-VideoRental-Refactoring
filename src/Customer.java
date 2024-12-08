@@ -59,14 +59,20 @@ public class Customer {
 		}
 
 		result += "Total charge: " + totalCharge + "\tTotal Point:" + totalPoint + "\n";
-		
-		
-		if ( totalPoint >= 10 ) {
-			System.out.println("Congrat! You earned one free coupon");
+
+		return result+couponMessage(totalPoint) ;
+	}
+
+	private String couponMessage(int totalPoint) {
+		String message = "";
+
+		if (totalPoint >= 10) {
+			message += "Congrat! You earned one free coupon\n";
 		}
-		if ( totalPoint >= 30 ) {
-			System.out.println("Congrat! You earned two free coupon");
+		if (totalPoint >= 30) {
+			message += "Congrat! You earned two free coupons\n";
 		}
-		return result ;
+
+		return message;
 	}
 }
