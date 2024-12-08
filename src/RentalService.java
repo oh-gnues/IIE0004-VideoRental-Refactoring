@@ -37,11 +37,6 @@ public class RentalService {
         }
     }
 
-    public CustomerReportData getCustomerReportData(String customerName) {
-        Customer customer = customerService.findCustomer(customerName);
-        return (customer != null) ? customer.generateReportData() : null;
-    }
-
     public void clearRentals(String customerName) {
         Customer customer = customerService.findCustomer(customerName);
 
