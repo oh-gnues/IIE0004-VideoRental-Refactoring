@@ -4,24 +4,14 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class CustomerService {
-    private List<Customer> customers;
+    private final List<Customer> customers;
 
     public CustomerService() {
-        customers = new ArrayList<Customer>();
+        customers = new ArrayList<>();
     }
 
-    public List<String> listCustomers() {
-        List<String> customerDetails = new ArrayList<>();
-        for (Customer customer : customers) {
-            StringBuilder customerInfo = new StringBuilder();
-            customerInfo.append("Name: ").append(customer.getName()).append("\tRentals: ").append(customer.getRentals().size());
-            for (Rental rental : customer.getRentals()) {
-                customerInfo.append("\n\tTitle: " + rental.getVideo().getTitle())
-                        .append(" \tPrice Code: ").append(rental.getVideo().getPriceCode());
-            }
-            customerDetails.add(customerInfo.toString());
-        }
-        return customerDetails;
+    public List<Customer> getAllCustomers() {
+        return new ArrayList<>(customers);
     }
 
     public void registerCustomer(String name) {

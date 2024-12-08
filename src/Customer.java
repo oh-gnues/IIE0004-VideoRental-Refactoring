@@ -1,13 +1,11 @@
 package src;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Customer {
 	private String name;
-
-	private List<Rental> rentals = new ArrayList<Rental>();
+	private List<Rental> rentals = new ArrayList<>();
 
 	public Customer(String name) {
 		this.setName(name);
@@ -37,42 +35,25 @@ public class Customer {
 		rentals.remove(rental);
 	}
 
-	public String getReport() {
-		String result = "Customer Report for " + getName() + "\n";
-
-		List<Rental> rentals = getRentals();
-
-		double totalCharge = 0;
-		int totalPoint = 0;
+	public CustomerReportData generateReportData() {
+		CustomerReportData reportData = new CustomerReportData(getName());
 
 		for (Rental each : rentals) {
 			double eachCharge = each.getCharge();
 			int eachPoint = each.getPoints();
+			int daysRented = each.getDaysRented();
 
-			result += "\t" + each.getVideo().getTitle()
-					+ "\tDays rented: " + each.getDaysRented()
-					+ "\tCharge: " + eachCharge
-					+ "\tPoint: " + eachPoint + "\n";
+			reportData.addRentalData(new CustomerReportData.RentalData(
+					each.getVideo().getTitle(),
+					daysRented,
+					eachCharge,
+					eachPoint
+			));
 
-			totalCharge += eachCharge;
-			totalPoint += eachPoint ;
+			reportData.addCharge(eachCharge);
+			reportData.addPoint(eachPoint);
 		}
 
-		result += "Total charge: " + totalCharge + "\tTotal Point:" + totalPoint + "\n";
-
-		return result+couponMessage(totalPoint) ;
-	}
-
-	private String couponMessage(int totalPoint) {
-		String message = "";
-
-		if (totalPoint >= 10) {
-			message += "Congrat! You earned one free coupon\n";
-		}
-		if (totalPoint >= 30) {
-			message += "Congrat! You earned two free coupons\n";
-		}
-
-		return message;
+		return reportData;
 	}
 }

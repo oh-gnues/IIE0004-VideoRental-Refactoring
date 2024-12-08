@@ -1,8 +1,8 @@
 package src;
 
 public class RentalService {
-    private CustomerService customerService;
-    private VideoService videoService;
+    private final CustomerService customerService;
+    private final VideoService videoService;
 
     public RentalService(CustomerService customerService, VideoService videoService) {
         this.customerService = customerService;
@@ -37,9 +37,9 @@ public class RentalService {
         }
     }
 
-    public String getCustomerReport(String customerName) {
+    public CustomerReportData getCustomerReportData(String customerName) {
         Customer customer = customerService.findCustomer(customerName);
-        return customer != null ? customer.getReport() : "No customer found.";
+        return (customer != null) ? customer.generateReportData() : null;
     }
 
     public void clearRentals(String customerName) {

@@ -5,9 +5,11 @@ import java.util.Scanner;
 public class VRUI {
 	private final Scanner scanner ;
 
-	private CustomerService customerService = new CustomerService() ;
-	private VideoService videoService = new VideoService() ;
-	private RentalService rentalService = new RentalService(customerService, videoService) ;
+	private final CustomerService customerService = new CustomerService() ;
+	private final VideoService videoService = new VideoService() ;
+	private final RentalService rentalService = new RentalService(customerService, videoService) ;
+	private final ReportFormatter reportFormatter = new ReportFormatter();
+	private final CustomerFormatter customerFormatter = new CustomerFormatter();
 
 	public VRUI(Scanner scanner) {
 		this.scanner = scanner;
@@ -63,8 +65,10 @@ public class VRUI {
 
 	public void listCustomers() {
 		System.out.println("List of customers") ;
-		for ( String customerDetail: customerService.listCustomers() ) {
-			System.out.println(customerDetail) ;
+		var customers = customerService.getAllCustomers();
+		var customerDetails = customerFormatter.formatCustomers(customers);
+		for ( String detail : customerDetails ) {
+			System.out.println(detail) ;
 		}
 		System.out.println("End of list") ;
 	}
@@ -122,7 +126,13 @@ public class VRUI {
 		System.out.println("Enter customer name: ") ;
 		String customerName = scanner.next() ;
 
-		System.out.println(rentalService.getCustomerReport(customerName));
+		CustomerReportData reportData = rentalService.getCustomerReportData(customerName);
+		if (reportData == null) {
+			System.out.println("No customer found.");
+		} else {
+			String report = reportFormatter.formatCustomerReport(reportData);
+			System.out.println(report);
+		}
 	}
 
 	public void clearRentals() {

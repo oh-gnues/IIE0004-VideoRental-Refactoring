@@ -21,6 +21,7 @@ class VideoRentalTest {
     private Video videoNewRelease;
     private Rental rentalRegular;
     private Rental rentalNewRelease;
+    private ReportFormatter reportFormatter;
 
     @BeforeEach
     void setUp() {
@@ -29,6 +30,12 @@ class VideoRentalTest {
         videoNewRelease = new Video("New Release", Video.DVD, Video.NEW_RELEASE, new Date());
         rentalRegular = new Rental(videoRegular);
         rentalNewRelease = new Rental(videoNewRelease);
+        reportFormatter = new ReportFormatter();
+    }
+    
+    private String getFormattedReport(Customer customer) {
+        CustomerReportData reportData = customer.generateReportData();
+        return reportFormatter.formatCustomerReport(reportData);
     }
 
     @Nested
@@ -47,7 +54,7 @@ class VideoRentalTest {
         @DisplayName("고객 리포트가 올바르게 생성되어야 한다")
         void generateReportTest() {
             customer.addRental(rentalRegular);
-            String report = customer.getReport();
+            String report = getFormattedReport(customer);
 
             assertAll(
                     () -> assertTrue(report.contains("Customer Report for Test Customer")),
@@ -127,7 +134,7 @@ class VideoRentalTest {
             customer.addRental(rentalRegular);
             // 2일 이내 대여 시 기본 요금 2만 부과
             setRentalPeriod(rentalRegular, 2);
-            String report = customer.getReport();
+            String report = getFormattedReport(customer);
             assertTrue(report.contains("Charge: 2.0"));
         }
 
@@ -137,7 +144,7 @@ class VideoRentalTest {
             customer.addRental(rentalRegular);
             // 4일 대여 시: 기본 2 + (2일 * 1.5) = 5
             setRentalPeriod(rentalRegular, 4);
-            String report = customer.getReport();
+            String report = getFormattedReport(customer);
             assertTrue(report.contains("Charge: 5.0"));
         }
 
@@ -147,7 +154,7 @@ class VideoRentalTest {
             customer.addRental(rentalNewRelease);
             // 3일 대여 시: 3일 * 3 = 9
             setRentalPeriod(rentalNewRelease, 3);
-            String report = customer.getReport();
+            String report = getFormattedReport(customer);
             assertTrue(report.contains("Charge: 9.0"));
         }
     }
@@ -159,7 +166,7 @@ class VideoRentalTest {
         @DisplayName("일반 비디오 대여 시 기본 포인트가 적립되어야 한다")
         void regularVideoBasicPointTest() {
             customer.addRental(rentalRegular);
-            String report = customer.getReport();
+            String report = getFormattedReport(customer);
             assertTrue(report.contains("Point: 1"));
         }
 
@@ -167,7 +174,7 @@ class VideoRentalTest {
         @DisplayName("신작 비디오 대여 시 추가 포인트가 적립되어야 한다")
         void newReleaseVideoExtraPointTest() {
             customer.addRental(rentalNewRelease);
-            String report = customer.getReport();
+            String report = getFormattedReport(customer);
             assertTrue(report.contains("Point: 2")); // 기본 1 + 신작 추가 !
         }
 
@@ -177,7 +184,7 @@ class VideoRentalTest {
             // DVD + Regular + 10일 대여 : 1포인트 - min(1, 3)포인트 = 0포인트
             customer.addRental(rentalRegular);
             setRentalPeriod(rentalRegular, 10);
-            String report = customer.getReport();
+            String report = getFormattedReport(customer);
             assertTrue(report.contains("Point: 0"));
 
             // VHS + 신작 + 6일 대여 : 2포인트 - 1포인트 = 1포인트
@@ -185,7 +192,7 @@ class VideoRentalTest {
             Rental rentalVHS = new Rental(vhsVideo);
             customer.addRental(rentalVHS);
             setRentalPeriod(rentalVHS, 6);
-            report = customer.getReport();
+            report = getFormattedReport(customer);
             assertTrue(report.contains("Point: 1"));
         }
 
@@ -199,7 +206,7 @@ class VideoRentalTest {
                 customer.addRental(new Rental(videos.get(i)));
             }
 
-            String report = customer.getReport();
+            String report = getFormattedReport(customer);
             assertTrue(report.contains("one free coupon")); // 10포인트 이상
 
             // 포인트가 30점 이상 쌓이는 상황 설정
@@ -208,7 +215,7 @@ class VideoRentalTest {
                 customer.addRental(new Rental(videos.get(i)));
             }
 
-            report = customer.getReport();
+            report = getFormattedReport(customer);
             assertTrue(report.contains("two free coupon")); // 30포인트 이상
         }
     }
