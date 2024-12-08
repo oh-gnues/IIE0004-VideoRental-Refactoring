@@ -67,4 +67,24 @@ public class Rental {
 		}
 		return ((int) (diff / (1000 * 60 * 60 * 24)) + 1);
 	}
+
+	public double getCharge() {
+		double charge = 0;
+		int daysRented = getDaysRented();
+
+		switch (getVideo().getPriceCode()) {
+			case Video.REGULAR:
+				charge += 2;
+				if (daysRented > 2) {
+					charge += (daysRented - 2) * 1.5;
+				}
+				break;
+
+			case Video.NEW_RELEASE:
+				charge = daysRented * 3;
+				break;
+		}
+
+		return charge;
+	}
 }
