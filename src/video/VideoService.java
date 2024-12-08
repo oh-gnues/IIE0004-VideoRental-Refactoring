@@ -1,4 +1,4 @@
-package src;
+package src.video;
 
 import java.util.ArrayList;
 import java.util.Date;

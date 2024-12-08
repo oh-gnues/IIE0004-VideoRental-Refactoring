@@ -1,4 +1,4 @@
-package src;
+package src.customer;
 
 import java.util.List;
 import java.util.ArrayList;

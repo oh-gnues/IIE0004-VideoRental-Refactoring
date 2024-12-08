@@ -1,4 +1,6 @@
-package src;
+package src.customer;
+
+import src.rental.Rental;
 
 import java.util.ArrayList;
 import java.util.List;

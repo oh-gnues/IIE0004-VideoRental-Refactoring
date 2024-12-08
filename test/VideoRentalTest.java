@@ -13,6 +13,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 import src.*;
+import src.customer.Customer;
+import src.customer.CustomerReportData;
+import src.customer.CustomerReportFormatter;
+import src.rental.Rental;
+import src.video.Video;
 
 @DisplayName("비디오 대여 시스템 테스트")
 class VideoRentalTest {
@@ -21,7 +26,7 @@ class VideoRentalTest {
     private Video videoNewRelease;
     private Rental rentalRegular;
     private Rental rentalNewRelease;
-    private ReportFormatter reportFormatter;
+    private CustomerReportFormatter customerReportFormatter;
 
     @BeforeEach
     void setUp() {
@@ -30,12 +35,12 @@ class VideoRentalTest {
         videoNewRelease = new Video("New Release", Video.DVD, Video.NEW_RELEASE, new Date());
         rentalRegular = new Rental(videoRegular);
         rentalNewRelease = new Rental(videoNewRelease);
-        reportFormatter = new ReportFormatter();
+        customerReportFormatter = new CustomerReportFormatter();
     }
     
     private String getFormattedReport(Customer customer) {
         CustomerReportData reportData = customer.generateReportData();
-        return reportFormatter.formatCustomerReport(reportData);
+        return customerReportFormatter.formatCustomerReport(reportData);
     }
 
     @Nested
