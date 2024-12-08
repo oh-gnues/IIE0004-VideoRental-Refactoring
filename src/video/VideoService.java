@@ -5,10 +5,10 @@ import java.util.Date;
 import java.util.List;
 
 public class VideoService {
-    private List<Video> videos;
+    private final List<Video> videos;
 
     public VideoService() {
-        videos = new ArrayList<Video>();
+        videos = new ArrayList<>();
     }
 
     public List<String> listVideos() {
@@ -28,10 +28,5 @@ public class VideoService {
                 .filter(video -> video.getTitle().equals(title) && !video.isRented())
                 .findFirst()
                 .orElse(null);
-    }
-
-    public void initDefaultVideos() {
-        videos.add(new Video("v1", Video.CD, Video.REGULAR, new Date()));
-        videos.add(new Video("v2", Video.DVD, Video.NEW_RELEASE, new Date()));
     }
 }
