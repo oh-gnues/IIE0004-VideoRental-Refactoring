@@ -4,23 +4,13 @@ import src.rental.RentalService;
 
 import java.util.Scanner;
 
-public class RentVideoCommand implements Command {
-    private final RentalService rentalService;
-    private final Scanner scanner;
-
+public class RentVideoCommand extends AbstractRentalCommand {
     public RentVideoCommand(RentalService rentalService, Scanner scanner) {
-        this.rentalService = rentalService;
-        this.scanner = scanner;
+        super(rentalService, scanner);
     }
 
     @Override
-    public void execute() {
-        System.out.println("Enter customer name: ");
-        String customerName = scanner.next();
-
-        System.out.println("Enter video title to rent: ");
-        String videoTitle = scanner.next();
-
+    protected void processRental(String customerName, String videoTitle) {
         rentalService.rentVideo(customerName, videoTitle);
     }
 }
