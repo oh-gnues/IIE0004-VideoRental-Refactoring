@@ -87,4 +87,18 @@ public class Rental {
 
 		return charge;
 	}
+
+	public int getPoints() {
+		int points = 1;
+
+		if (getVideo().getPriceCode() == Video.NEW_RELEASE) {
+			points++;
+		}
+
+		if (getDaysRented() > getDaysRentedLimit()) {
+			points -= Math.min(points, getVideo().getLateReturnPointPenalty());
+		}
+
+		return points;
+	}
 }
