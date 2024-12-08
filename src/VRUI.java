@@ -3,33 +3,42 @@ package src;
 import java.util.Scanner;
 
 public class VRUI {
-	private static Scanner scanner = new Scanner(System.in) ;
+	private final Scanner scanner ;
 
 	private CustomerService customerService = new CustomerService() ;
 	private VideoService videoService = new VideoService() ;
 	private RentalService rentalService = new RentalService(customerService, videoService) ;
-	
-	public static void main(String[] args) {
-		VRUI ui = new VRUI() ;
-		
-		boolean quit = false ;
-		while ( ! quit ) {
-			int command = ui.showCommand() ;
-			switch ( command ) {
-				case 0: quit = true ; break ;
-				case 1: ui.listCustomers() ; break ;
-				case 2: ui.listVideos() ; break ;
-				case 3: ui.registerCustomer() ; break ;
-				case 4: ui.registerVideo() ; break ;
-				case 5: ui.rentVideo() ; break ;
-				case 6: ui.returnVideo() ; break ;
-				case 7: ui.getCustomerReport() ; break ;
-				case 8: ui.clearRentals() ; break ;
-				case -1: ui.init() ; break ;
-				default: break ;
-			}
+
+	public VRUI(Scanner scanner) {
+		this.scanner = scanner;
+	}
+	public VRUI() {
+		this(new Scanner(System.in));
+	}
+
+	public void run() {
+		boolean quit = false;
+		while (!quit) {
+			int command = showCommand();
+			quit = processCommand(command);
 		}
-		System.out.println("Bye") ;
+		System.out.println("Bye");
+	}
+
+	public boolean processCommand(int command) {
+		switch (command) {
+			case 0: return true;
+			case 1: listCustomers() ; break ;
+			case 2: listVideos() ; break ;
+			case 3: registerCustomer() ; break ;
+			case 4: registerVideo() ; break ;
+			case 5: rentVideo() ; break ;
+			case 6: returnVideo() ; break ;
+			case 7: getCustomerReport() ; break;
+			case 8: clearRentals() ; break ;
+			case -1: init() ; break ;
+		}
+		return false;
 	}
 
 	public int showCommand() {
@@ -45,6 +54,11 @@ public class VRUI {
 		System.out.println("\t 8. Show customer and clear rentals") ;
 
 		return scanner.nextInt() ;
+	}
+
+	public static void main(String[] args) {
+		VRUI ui = new VRUI() ;
+		ui.run();
 	}
 
 	public void listCustomers() {
