@@ -199,13 +199,8 @@ class VideoRentalTest {
                 customer.addRental(new Rental(videos.get(i)));
             }
 
-            ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-            System.setOut(new PrintStream(outContent));
-
-            customer.getReport();
-
-            String output = outContent.toString();
-            assertTrue(output.contains("one free coupon")); // 10포인트 이상
+            String report = customer.getReport();
+            assertTrue(report.contains("one free coupon")); // 10포인트 이상
 
             // 포인트가 30점 이상 쌓이는 상황 설정
             for (int i = 6; i < 20; i++) {
@@ -213,11 +208,8 @@ class VideoRentalTest {
                 customer.addRental(new Rental(videos.get(i)));
             }
 
-            customer.getReport();
-            output = outContent.toString();
-            assertTrue(output.contains("two free coupon")); // 30포인트 이상
-
-            System.setOut(System.out); // 원래 출력 스트림으로 복구
+            report = customer.getReport();
+            assertTrue(report.contains("two free coupon")); // 30포인트 이상
         }
     }
 
