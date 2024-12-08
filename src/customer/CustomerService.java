@@ -25,11 +25,6 @@ public class CustomerService {
                 .orElse(null);
     }
 
-    public void initDefaultCustomers() {
-        customers.add(new Customer("James"));
-        customers.add(new Customer("Brown"));
-    }
-
     public CustomerReportData getCustomerReportData(String customerName) {
         Customer customer = findCustomer(customerName);
         return (customer != null) ? customer.generateReportData() : null;

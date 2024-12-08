@@ -49,15 +49,4 @@ public class RentalService {
             customer.getRentals().clear();
         }
     }
-
-    public void initDefaultRentals() {
-        Customer james = customerService.findCustomer("James");
-        Video v1 = videoService.findAvailableVideo("v1");
-        Video v2 = videoService.findAvailableVideo("v2");
-
-        if (james != null && v1 != null && v2 != null) {
-            rentVideo(james.getName(), v1.getTitle());
-            rentVideo(james.getName(), v2.getTitle());
-        }
-    }
 }
