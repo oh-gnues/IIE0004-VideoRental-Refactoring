@@ -1,6 +1,6 @@
-package src;
+package src.customer;
 
-public class ReportFormatter {
+public class CustomerReportFormatter {
     public String formatCustomerReport(CustomerReportData reportData) {
         StringBuilder result = new StringBuilder();
         result.append("Customer Report for ").append(reportData.getCustomerName()).append("\n");

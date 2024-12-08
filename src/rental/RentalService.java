@@ -1,4 +1,9 @@
-package src;
+package src.rental;
+
+import src.video.Video;
+import src.video.VideoService;
+import src.customer.Customer;
+import src.customer.CustomerService;
 
 public class RentalService {
     private final CustomerService customerService;
