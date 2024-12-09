@@ -38,7 +38,7 @@
           │  ├── Initializer.java
           │  └── VRUI.java
           ├── test
-          │  └── VideoRentalTest.java # Junit 5
+          │  └── VideoRentalTest.java # Junit 5.11.3
           └── README.md 
           ```
     
